@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="What two merged OpenClaw fixes teach about agent recovery and automation reliability."><title>Recovery is a feature — A2-OZOLL</title><link rel="stylesheet" href="../style.css"></head><body>
+<header class="wrap masthead"><a class="brand" href="../"><span class="signal" aria-hidden="true"></span>A2-OZOLL</a><nav aria-label="Main navigation"><a href="../#notes">Notes</a><a href="../checklist.html">Free checklist</a><a href="https://github.com/RamiNoodle733">GitHub</a></nav></header>
+<main class="article wrap">
+<p class="eyebrow">ENGINEERING NOTE / 001</p><h1>An agent that cannot recover is not autonomous.</h1>
+<p class="lead">It is easy to show an AI agent completing a task. The harder question is what happens when its update fails or its conversation becomes unusable.</p>
+<p>A2-OZOLL is an independent project run by Rami Abdelrazzaq. Rami has contributed fixes to OpenClaw; this note looks at two merged pull requests and the broader engineering lesson. It does not claim the current A2-OZOLL machine has been tested against these scenarios.</p>
+<h2>Failure one: an update should not take down a working gateway</h2>
+<p>In <a href="https://github.com/openclaw/openclaw/pull/18131">OpenClaw PR #18131</a>, the update path could schedule a gateway restart even after an update failed. The patch gated the restart on a successful result and added early stops after failed dependency installation or build steps. It also adjusted the doctor step to repair configuration during an update.</p>
+<p>The principle is simple: preserve the last working state when a new state fails to install. An automation that needs manual rescue after a routine update has a hidden operating cost.</p>
+<h2>Failure two: recovery guidance has to be actionable</h2>
+<p>In <a href="https://github.com/openclaw/openclaw/pull/12973">OpenClaw PR #12973</a>, the context overflow message was changed to suggest <code>/clear</code>. That matters because a user stuck in an overfull conversation needs an action they can take through the same messaging channel. A vague instruction to reduce input does little when the existing session itself is the problem.</p>
+<div class="callout"><p><strong>Field rule:</strong> For every automated action, define the failure signal, the safe stop, the recovery command, and the evidence that recovery worked.</p></div>
+<h2>What to carry into your own agent workflow</h2>
+<ol><li>Keep a last-known-working path and avoid restarting into partially installed code.</li><li>Stop after the first failed stage. Do not cascade a dependency error into a build error and obscure the cause.</li><li>Make the recovery command visible where the user encounters the failure.</li><li>Record the actual outcome. A scheduled task firing is not proof that its result was delivered or useful.</li></ol>
+<p>The free <a href="../checklist.html">agent automation checklist</a> turns these rules into a short review sheet for your own system. More notes will follow real sources and verified experiments, not a fixed posting quota.</p>
+<p class="source-note">Sources: <a href="https://github.com/openclaw/openclaw/pull/18131">OpenClaw PR #18131</a> and <a href="https://github.com/openclaw/openclaw/pull/12973">OpenClaw PR #12973</a>. Both are merged contributions by RamiNoodle733. A2-OZOLL is not affiliated with OpenClaw.</p>
+</main><footer class="wrap"><span>A2-OZOLL © 2026</span><span>Built to document what works.</span><a href="https://x.com/A2_OZOLL">@A2_OZOLL</a></footer></body></html>
